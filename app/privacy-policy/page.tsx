@@ -2,7 +2,7 @@
 
 import { PageHeader } from '@/components/page-header';
 import { useEffect, useState } from 'react';
-import { getPrivacyPolicy } from '@/lib/db';
+import { getPrivacyPolicy, subscribeStaticPage } from '@/lib/db';
 import Markdown from 'react-markdown';
 
 export default function PrivacyPolicyPage() {
@@ -10,12 +10,30 @@ export default function PrivacyPolicyPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     async function load() {
       const data = await getPrivacyPolicy();
-      if (data) setContent(data);
-      setLoading(false);
+      if (isMounted) {
+        if (data) setContent(data);
+        setLoading(false);
+      }
     }
     load();
+
+    const unsub = subscribeStaticPage(
+      ["privacy_policy", "privacy", "privacypolicy", "privacy-policy", "policy"],
+      (updatedData) => {
+        if (isMounted && updatedData) {
+          setContent(updatedData);
+          setLoading(false);
+        }
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      unsub();
+    };
   }, []);
 
   return (
@@ -27,10 +45,10 @@ export default function PrivacyPolicyPage() {
       
       <div className="glass rounded-[36px] p-8 md:p-12 prose dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-info-light">
         {loading ? (
-          <div className="text-center py-8">Loading...</div>
-        ) : content ? (
-          <div className="markdown-body">
-            <Markdown>{content.contentMarkdown || content.description || content.content || ''}</Markdown>
+          <div className="text-center py-8 text-primary-light/60 dark:text-primary/60">Loading privacy policy...</div>
+        ) : content?.contentMarkdown ? (
+          <div className="markdown-body leading-relaxed">
+            <Markdown>{content.contentMarkdown}</Markdown>
           </div>
         ) : (
           <>
@@ -80,7 +98,7 @@ export default function PrivacyPolicyPage() {
             <h2>7. Contact Us</h2>
             <p>
               If you have any questions or concerns regarding our privacy practices, please contact us at 
-              <a href="mailto:contact@civilengineeringclub.edu" className="ml-1">contact@civilengineeringclub.edu</a> 
+              <a href="mailto:civilengineeringclubhstu@gmail.com" className="ml-1">civilengineeringclubhstu@gmail.com</a> 
               or visit our club office in the Dr. Muhammad Qudrat-I-Khuda Academic Building.
             </p>
 

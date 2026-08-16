@@ -2,7 +2,7 @@
 
 import { PageHeader } from '@/components/page-header';
 import { useEffect, useState } from 'react';
-import { getConstitution } from '@/lib/db';
+import { getConstitution, subscribeStaticPage } from '@/lib/db';
 import Markdown from 'react-markdown';
 
 export default function ConstitutionPage() {
@@ -10,12 +10,30 @@ export default function ConstitutionPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     async function load() {
       const data = await getConstitution();
-      if (data) setContent(data);
-      setLoading(false);
+      if (isMounted) {
+        if (data) setContent(data);
+        setLoading(false);
+      }
     }
     load();
+
+    const unsub = subscribeStaticPage(
+      ["constitution", "constitution_page", "rules"],
+      (updatedData) => {
+        if (isMounted && updatedData) {
+          setContent(updatedData);
+          setLoading(false);
+        }
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      unsub();
+    };
   }, []);
 
   return (

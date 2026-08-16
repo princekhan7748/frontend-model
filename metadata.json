@@ -1,6 +1,6 @@
 {
-  "name": "Civil Engineering Club",
-  "description": "Club website platform for Civil Engineering Club",
+  "name": "HSTU Research Society",
+  "description": "Hajee Mohammad Danesh Science and Technology University Research Society is the premier research institution of the country",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

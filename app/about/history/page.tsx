@@ -2,7 +2,7 @@
 
 import { PageHeader } from '@/components/page-header';
 import { useEffect, useState } from 'react';
-import { getHistory } from '@/lib/db';
+import { getHistory, subscribeStaticPage } from '@/lib/db';
 import Markdown from 'react-markdown';
 
 export default function HistoryPage() {
@@ -10,12 +10,30 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     async function load() {
       const data = await getHistory();
-      if (data) setContent(data);
-      setLoading(false);
+      if (isMounted) {
+        if (data) setContent(data);
+        setLoading(false);
+      }
     }
     load();
+
+    const unsub = subscribeStaticPage(
+      ["history", "our_history", "history_page"],
+      (updatedData) => {
+        if (isMounted && updatedData) {
+          setContent(updatedData);
+          setLoading(false);
+        }
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      unsub();
+    };
   }, []);
 
   return (

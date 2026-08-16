@@ -664,64 +664,97 @@ export async function getCertificate(certificateId: string) {
   return { id: snap.docs[0].id, ...snap.docs[0].data() };
 }
 
-export async function getConstitution() {
+export async function getStaticPage(
+  docIds: string | string[],
+  collections: string[] = ["pages_static", "site_settings", "static_pages", "pages"]
+) {
   if (!db) return null;
-  try {
-    const q = query(collection(db, "pages_static"), where("__name__", "==", "constitution"));
-    const snap = await getDocs(q);
-    if (snap.empty) return null;
-    return { id: snap.docs[0].id, ...snap.docs[0].data() };
-  } catch (e) {
-    console.error("Failed to fetch constitution", e);
-    return null;
+  const ids = Array.isArray(docIds) ? docIds : [docIds];
+  
+  for (const colName of collections) {
+    for (const docId of ids) {
+      try {
+        const docRef = doc(db, colName, docId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const markdownContent = data.contentMarkdown || data.content || data.bodyRichText || data.markdown || data.description || data.text || '';
+          if (markdownContent || Object.keys(data).length > 0) {
+            return {
+              id: docSnap.id,
+              contentMarkdown: markdownContent,
+              updatedAt: data.updatedAt,
+              ...data
+            };
+          }
+        }
+      } catch (err) {
+        console.warn(`Could not fetch static doc ${docId} from ${colName}:`, err);
+      }
+    }
   }
+  return null;
+}
+
+export function subscribeStaticPage(
+  docIds: string | string[],
+  onUpdate: (data: any) => void,
+  collections: string[] = ["pages_static", "site_settings", "static_pages", "pages"]
+) {
+  if (!db) return () => {};
+  const ids = Array.isArray(docIds) ? docIds : [docIds];
+  const unsubs: (() => void)[] = [];
+
+  for (const colName of collections) {
+    for (const docId of ids) {
+      try {
+        const docRef = doc(db, colName, docId);
+        const unsub = onSnapshot(docRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const markdownContent = data.contentMarkdown || data.content || data.bodyRichText || data.markdown || data.description || data.text || '';
+            onUpdate({
+              id: docSnap.id,
+              contentMarkdown: markdownContent,
+              updatedAt: data.updatedAt,
+              ...data
+            });
+          }
+        }, (err) => {
+          console.warn(`Realtime error for static page ${docId} on ${colName}:`, err);
+        });
+        unsubs.push(unsub);
+      } catch (err) {
+        console.warn(`Could not subscribe to ${docId} on ${colName}:`, err);
+      }
+    }
+  }
+
+  return () => {
+    unsubs.forEach((u) => {
+      try {
+        u();
+      } catch (e) {
+        // ignore
+      }
+    });
+  };
+}
+
+export async function getConstitution() {
+  return getStaticPage(["constitution", "constitution_page", "rules"]);
 }
 
 export async function getHistory() {
-  if (!db) return null;
-  try {
-    const q = query(collection(db, "pages_static"), where("__name__", "==", "history"));
-    const snap = await getDocs(q);
-    if (snap.empty) return null;
-    return { id: snap.docs[0].id, ...snap.docs[0].data() };
-  } catch (e) {
-    console.error("Failed to fetch history", e);
-    return null;
-  }
+  return getStaticPage(["history", "our_history", "history_page"]);
 }
 
 export async function getTermsOfService() {
-  if (!db) return null;
-  try {
-    for (const docId of ["terms_of_service", "terms", "tos"]) {
-      const q = query(collection(db, "pages_static"), where("__name__", "==", docId));
-      const snap = await getDocs(q);
-      if (!snap.empty) {
-        return { id: snap.docs[0].id, ...snap.docs[0].data() };
-      }
-    }
-    return null;
-  } catch (e) {
-    console.error("Failed to fetch terms of service", e);
-    return null;
-  }
+  return getStaticPage(["terms_of_service", "terms", "tos", "termsofservice", "terms-of-service"]);
 }
 
 export async function getPrivacyPolicy() {
-  if (!db) return null;
-  try {
-    for (const docId of ["privacy_policy", "privacy", "privacypolicy"]) {
-      const q = query(collection(db, "pages_static"), where("__name__", "==", docId));
-      const snap = await getDocs(q);
-      if (!snap.empty) {
-        return { id: snap.docs[0].id, ...snap.docs[0].data() };
-      }
-    }
-    return null;
-  } catch (e) {
-    console.error("Failed to fetch privacy policy", e);
-    return null;
-  }
+  return getStaticPage(["privacy_policy", "privacy", "privacypolicy", "privacy-policy", "policy"]);
 }
 
 export async function getLocation() {

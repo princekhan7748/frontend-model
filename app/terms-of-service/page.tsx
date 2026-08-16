@@ -2,7 +2,7 @@
 
 import { PageHeader } from '@/components/page-header';
 import { useEffect, useState } from 'react';
-import { getTermsOfService } from '@/lib/db';
+import { getTermsOfService, subscribeStaticPage } from '@/lib/db';
 import Markdown from 'react-markdown';
 
 export default function TermsOfServicePage() {
@@ -10,12 +10,30 @@ export default function TermsOfServicePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     async function load() {
       const data = await getTermsOfService();
-      if (data) setContent(data);
-      setLoading(false);
+      if (isMounted) {
+        if (data) setContent(data);
+        setLoading(false);
+      }
     }
     load();
+
+    const unsub = subscribeStaticPage(
+      ["terms_of_service", "terms", "tos", "termsofservice", "terms-of-service"],
+      (updatedData) => {
+        if (isMounted && updatedData) {
+          setContent(updatedData);
+          setLoading(false);
+        }
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      unsub();
+    };
   }, []);
 
   return (
@@ -27,10 +45,10 @@ export default function TermsOfServicePage() {
       
       <div className="glass rounded-[36px] p-8 md:p-12 prose dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-info-light">
         {loading ? (
-          <div className="text-center py-8">Loading...</div>
-        ) : content ? (
-          <div className="markdown-body">
-            <Markdown>{content.contentMarkdown || content.description || content.content || ''}</Markdown>
+          <div className="text-center py-8 text-primary-light/60 dark:text-primary/60">Loading terms...</div>
+        ) : content?.contentMarkdown ? (
+          <div className="markdown-body leading-relaxed">
+            <Markdown>{content.contentMarkdown}</Markdown>
           </div>
         ) : (
           <>
@@ -79,7 +97,7 @@ export default function TermsOfServicePage() {
             </p>
             <p>
               For inquiries regarding these Terms of Service, please reach out via our contact page or email 
-              <a href="mailto:contact@civilengineeringclub.edu" className="ml-1">contact@civilengineeringclub.edu</a>.
+              <a href="mailto:civilengineeringclubhstu@gmail.com" className="ml-1">civilengineeringclubhstu@gmail.com</a>.
             </p>
 
             <hr />
