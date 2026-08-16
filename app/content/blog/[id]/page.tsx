@@ -139,10 +139,13 @@ export default function BlogPostPage() {
       {/* Author Section */}
       <div className="flex items-center gap-3 mb-8 pb-6 border-b border-black/5 dark:border-white/10">
         {post.authorImageUrl ? (
-          <img 
+          <Image 
             src={post.authorImageUrl} 
             alt={post.authorName || post.author || 'Author'} 
+            width={40}
+            height={40}
             className="w-10 h-10 rounded-full object-cover border border-white/20 shadow-sm"
+            referrerPolicy="no-referrer"
           />
         ) : (
           <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 flex items-center justify-center font-bold text-sm shrink-0">
@@ -179,6 +182,7 @@ export default function BlogPostPage() {
           src={postImage}
           alt={post.title}
           fill
+          sizes="(max-width: 896px) 100vw, 896px"
           className="object-cover"
           referrerPolicy="no-referrer"
           priority

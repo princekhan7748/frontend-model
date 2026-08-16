@@ -42,20 +42,32 @@ export function Footer() {
 
           <div className="flex flex-col gap-4">
             <h4 className="font-bold text-lg mb-2">Quick Links</h4>
-            {['Home', 'About Us', 'Gallery', 'Events', 'Contact'].map((item) => (
-              <Link key={item} href="#" className="text-primary-light/70 dark:text-primary/70 hover:text-info-light transition-colors flex items-center gap-2 group">
+            {[
+              { label: 'Home', href: '/' },
+              { label: 'About Us', href: '/about/leadership/executive' },
+              { label: 'Gallery', href: '/content/gallery' },
+              { label: 'Events', href: '/events/upcoming' },
+              { label: 'Contact', href: '/contact' },
+            ].map((item) => (
+              <Link key={item.label} href={item.href} className="text-primary-light/70 dark:text-primary/70 hover:text-info-light transition-colors flex items-center gap-2 group">
                 <span className="w-0 h-[2px] bg-info-light transition-all duration-300 group-hover:w-4"></span>
-                {item}
+                {item.label}
               </Link>
             ))}
           </div>
 
           <div className="flex flex-col gap-4">
             <h4 className="font-bold text-lg mb-2">Resources</h4>
-            {['Constitution', 'History', 'Magazine', 'Certificate Verification', 'FAQ'].map((item) => (
-              <Link key={item} href="#" className="text-primary-light/70 dark:text-primary/70 hover:text-info-light transition-colors flex items-center gap-2 group">
+            {[
+              { label: 'Constitution', href: '/about/constitution' },
+              { label: 'History', href: '/about/history' },
+              { label: 'Magazine', href: '/content/magazine' },
+              { label: 'Certificate Verification', href: '/verification/certificate' },
+              { label: 'FAQ', href: '/contact/faq' },
+            ].map((item) => (
+              <Link key={item.label} href={item.href} className="text-primary-light/70 dark:text-primary/70 hover:text-info-light transition-colors flex items-center gap-2 group">
                 <span className="w-0 h-[2px] bg-info-light transition-all duration-300 group-hover:w-4"></span>
-                {item}
+                {item.label}
               </Link>
             ))}
           </div>
@@ -68,24 +80,27 @@ export function Footer() {
             </div>
             <div className="flex items-center gap-3 text-primary-light/70 dark:text-primary/70 mt-2">
               <Mail className="w-5 h-5 shrink-0 text-info-light" />
-              <p>contact@civilengineeringclub.edu</p>
+              <p>civilengineeringclubhstu@gmail.com</p>
             </div>
-            <motion.button 
+            <motion.a 
+              href="https://forms.gle/3NG63JDYm9Qmgg379"
+              target="_blank"
+              rel="noopener noreferrer"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="mt-4 flex items-center justify-between px-6 py-4 glass rounded-2xl hover:bg-white/80 transition-colors"
+              className="mt-4 flex items-center justify-between px-6 py-4 glass rounded-2xl hover:bg-white/80 dark:hover:bg-white/15 transition-colors cursor-pointer group"
             >
-              <span className="font-semibold text-sm">Join our Newsletter</span>
-              <ArrowRight className="w-4 h-4" />
-            </motion.button>
+              <span className="font-semibold text-sm group-hover:text-info-light transition-colors">Join our Newsletter</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </motion.a>
           </div>
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-black/5 dark:border-white/10 gap-4 text-sm text-primary-light/60 dark:text-primary/60">
           <p>© {new Date().getFullYear()} Civil Engineering Club. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link href="#" className="hover:text-info-light transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-info-light transition-colors">Terms of Service</Link>
+            <Link href="/privacy-policy" className="hover:text-info-light transition-colors">Privacy Policy</Link>
+            <Link href="/terms-of-service" className="hover:text-info-light transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

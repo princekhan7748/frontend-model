@@ -260,6 +260,7 @@ export default function BlogPage() {
                     src={img}
                     alt={title}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     referrerPolicy="no-referrer"
                   />
@@ -319,10 +320,13 @@ export default function BlogPage() {
                   {/* Author Card */}
                   <div className="flex items-center gap-3 mt-4 pt-3 border-t border-black/5 dark:border-white/10">
                     {post.authorImageUrl ? (
-                      <img 
+                      <Image 
                         src={post.authorImageUrl} 
                         alt={post.authorName || post.author || 'Author'} 
+                        width={36}
+                        height={36}
                         className="w-9 h-9 rounded-full object-cover border border-white/20"
+                        referrerPolicy="no-referrer"
                       />
                     ) : (
                       <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 flex items-center justify-center font-bold text-xs shrink-0">

@@ -690,6 +690,40 @@ export async function getHistory() {
   }
 }
 
+export async function getTermsOfService() {
+  if (!db) return null;
+  try {
+    for (const docId of ["terms_of_service", "terms", "tos"]) {
+      const q = query(collection(db, "pages_static"), where("__name__", "==", docId));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        return { id: snap.docs[0].id, ...snap.docs[0].data() };
+      }
+    }
+    return null;
+  } catch (e) {
+    console.error("Failed to fetch terms of service", e);
+    return null;
+  }
+}
+
+export async function getPrivacyPolicy() {
+  if (!db) return null;
+  try {
+    for (const docId of ["privacy_policy", "privacy", "privacypolicy"]) {
+      const q = query(collection(db, "pages_static"), where("__name__", "==", docId));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        return { id: snap.docs[0].id, ...snap.docs[0].data() };
+      }
+    }
+    return null;
+  } catch (e) {
+    console.error("Failed to fetch privacy policy", e);
+    return null;
+  }
+}
+
 export async function getLocation() {
   if (!db) return null;
   try {

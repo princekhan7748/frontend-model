@@ -47,6 +47,7 @@ export default function GalleryPage() {
               src={card.items[0].url}
               alt={card.title || "Gallery"}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover transition-transform duration-700 group-hover:scale-110"
               referrerPolicy="no-referrer"
             />
@@ -127,6 +128,7 @@ export default function GalleryPage() {
                    src={galleries[selectedCardIdx].items[innerItemIdx].url}
                    alt={`${galleries[selectedCardIdx].title} - Item ${innerItemIdx + 1}`}
                    fill
+                   sizes="(max-width: 1024px) 100vw, 896px"
                    className="object-contain"
                    referrerPolicy="no-referrer"
                 />
@@ -185,6 +187,7 @@ export default function GalleryPage() {
                     src={item.url} 
                     alt={`Thumbnail ${i}`} 
                     fill 
+                    sizes="64px"
                     className="object-cover" 
                     referrerPolicy="no-referrer"
                   />

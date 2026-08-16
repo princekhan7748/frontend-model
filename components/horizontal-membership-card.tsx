@@ -135,6 +135,7 @@ export function HorizontalMembershipCard({ member }: HorizontalMembershipCardPro
                   src={member.photoUrl}
                   alt={member.fullName || member.name}
                   fill
+                  sizes="(max-width: 640px) 112px, 128px"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                   referrerPolicy="no-referrer"
                 />

@@ -61,6 +61,7 @@ export function MemberCard({
           src={displayPhoto}
           alt={displayName}
           fill
+          sizes="128px"
           className="object-cover"
           referrerPolicy="no-referrer"
         />

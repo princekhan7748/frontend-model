@@ -201,6 +201,7 @@ export default function Home() {
               src="/home2.png"
               alt="About our club"
               fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover group-hover:scale-105 transition-transform duration-700"
               referrerPolicy="no-referrer"
             />
@@ -283,6 +284,7 @@ export default function Home() {
                         src={item.coverImageUrl || item.imageUrl || `https://picsum.photos/seed/blog${idx}/600/400`}
                         alt={item.title || "Blog cover"}
                         fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                         referrerPolicy="no-referrer"
                       />
@@ -302,10 +304,13 @@ export default function Home() {
                       {/* Author Info */}
                       <div className="flex items-center gap-2.5 pt-3 border-t border-black/5 dark:border-white/10 mb-3">
                         {item.authorImageUrl ? (
-                          <img 
+                          <Image 
                             src={item.authorImageUrl} 
                             alt={item.authorName || item.author || 'Author'} 
+                            width={28}
+                            height={28}
                             className="w-7 h-7 rounded-full object-cover border border-white/20"
+                            referrerPolicy="no-referrer"
                           />
                         ) : (
                           <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 flex items-center justify-center font-bold text-[10px] shrink-0">

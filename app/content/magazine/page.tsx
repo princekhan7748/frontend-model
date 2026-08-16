@@ -31,6 +31,7 @@ export default function MagazinePage() {
             src={selected.coverImageUrl || 'https://picsum.photos/seed/mag/800/1100'}
             alt={selected.title}
             fill
+            sizes="100vw"
             className="object-cover opacity-40 dark:opacity-90 transition-opacity duration-1000"
             referrerPolicy="no-referrer"
           />
