@@ -49,11 +49,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/logo.png', sizes: '192x192', type: 'image/png' },
-      { url: '/logo.png', sizes: '512x512', type: 'image/png' },
+      { url: '/logo.png?v=3', sizes: '192x192', type: 'image/png' },
+      { url: '/logo.png?v=3', sizes: '512x512', type: 'image/png' },
     ],
     apple: [
-      { url: '/logo.png', sizes: '192x192', type: 'image/png' },
+      { url: '/logo.png?v=3', sizes: '192x192', type: 'image/png' },
     ],
   },
   formatDetection: {
@@ -65,7 +65,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${montserrat.variable} ${inter.variable} ${spaceGrotesk.variable}`}>
       <head>
-        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="apple-touch-icon" href="/logo.png?v=3" />
+        <link rel="icon" href="/logo.png?v=3" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body suppressHydrationWarning className="antialiased font-sans overflow-x-hidden transition-colors duration-500">

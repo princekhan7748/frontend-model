@@ -123,10 +123,11 @@ export function PWAProvider() {
             <div className="flex items-start gap-3.5">
               <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 p-2 shrink-0 border border-blue-500/20 flex items-center justify-center relative overflow-hidden shadow-inner">
                 <Image
-                  src="/logo.png"
+                  src="/logo.png?v=3"
                   alt="App icon"
                   width={36}
                   height={36}
+                  unoptimized
                   className="w-full h-full object-contain"
                 />
               </div>

@@ -95,20 +95,21 @@ export function HorizontalMembershipCard({ member }: HorizontalMembershipCardPro
             <div className="flex items-center gap-3">
               <div className="relative w-12 h-12 rounded-xl bg-white/10 p-1.5 backdrop-blur-md border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
                 <Image
-                  src="/logo.png"
-                  alt="Civil Engineering Club HSTU"
+                  src="/logo.png?v=3"
+                  alt="HSTU Research Society"
                   width={40}
                   height={40}
+                  unoptimized
                   className="object-contain w-full h-full"
                 />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="font-extrabold text-sm sm:text-base tracking-wider uppercase text-white">
-                    Civil Engineering Club
+                    HSTU Research Society
                   </h3>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                    HSTU
+                    HSTU RS
                   </span>
                 </div>
                 <p className="text-[11px] sm:text-xs text-slate-400 font-medium tracking-tight">
@@ -190,7 +191,7 @@ export function HorizontalMembershipCard({ member }: HorizontalMembershipCardPro
                 
                 <div className="flex items-center gap-1.5 text-xs sm:text-sm text-blue-300 font-medium mt-0.5">
                   <Building2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                  <span>{member.department || 'Department of Civil Engineering'}</span>
+                  <span>{member.department || 'HSTU Research Society'}</span>
                 </div>
               </div>
 
@@ -292,7 +293,7 @@ export function HorizontalMembershipCard({ member }: HorizontalMembershipCardPro
               Official Verified Digital Membership Identity
             </span>
             <span className="font-mono text-[10px] text-slate-500">
-              CEC-HSTU • All Rights Reserved
+              HSTU RS • All Rights Reserved
             </span>
           </div>
         </motion.div>

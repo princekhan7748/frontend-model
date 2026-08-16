@@ -29,7 +29,7 @@ export default function ArchivePage() {
     <div className="container mx-auto px-4 sm:px-6 max-w-7xl pb-24">
       <PageHeader 
         title="Past Events & Archives" 
-        description="Explore the archives of our previous symposia, workshops, civil fests, and competitions." 
+        description="Explore the archives of our previous symposia, workshops, research fests, and competitions." 
       />
       
       {loading && (

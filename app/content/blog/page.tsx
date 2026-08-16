@@ -139,7 +139,7 @@ export default function BlogPage() {
     <div className="container mx-auto px-4 sm:px-6 max-w-7xl pb-24">
       <PageHeader 
         title="Our Blog & Stories" 
-        description="Thoughts, civil engineering updates, insights, and stories directly synced from our backend database." 
+        description="Research papers, insights, updates, and stories directly synced from our backend database." 
       />
 
       {/* Search & Tag Filter Bar */}

@@ -40,7 +40,7 @@ function AnimatedCounter({ endValue, duration = 2000, suffix = "" }: { endValue:
 
 function TypewriterHeading() {
   const [text, setText] = React.useState('');
-  const fullText = "WE GROW DREAMS NOT HOUSES.";
+  const fullText = "ANALYZE\nSTRATEGIZE\nIMPROVISE";
 
   React.useEffect(() => {
     let i = 0;
@@ -49,37 +49,40 @@ function TypewriterHeading() {
         i++;
         setText(fullText.slice(0, i));
         if (i >= fullText.length) clearInterval(timer);
-      }, 65);
+      }, 70);
     }, 150);
     return () => clearTimeout(timeout);
   }, []);
 
-  const renderText = (t: string) => {
-    const showDreams = t.length >= 8;
-    const showLine2 = t.length >= 15;
+  const renderLines = (content: string, isCursor = false) => {
+    const lines = content.split('\n');
     return (
-      <>
-        {t.slice(0, 7)}
-        {showDreams && <br />}
-        {showDreams && (
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-info-light to-blue-400">
-            {t.slice(8, 14)}
-          </span>
-        )}
-        {showLine2 && <br />}
-        {showLine2 && t.slice(15)}
-      </>
+      <div className="flex flex-col space-y-1">
+        {lines.map((line, idx) => (
+          <div key={idx} className="leading-[1.06] tracking-tight">
+            {idx === 1 ? (
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-info-light via-blue-500 to-indigo-500">
+                {line}
+              </span>
+            ) : (
+              <span>{line}</span>
+            )}
+            {isCursor && idx === lines.length - 1 && (
+              <span className="animate-pulse border-r-4 border-info-light ml-1 sm:ml-2 inline-block h-[0.75em] align-middle" />
+            )}
+          </div>
+        ))}
+      </div>
     );
   };
 
   return (
-    <div className="text-[15vw] xs:text-[14vw] sm:text-6xl md:text-7xl lg:text-[80px] leading-[1.18] sm:leading-[1.12] tracking-tight font-bold pt-10 pb-6 sm:py-0 mt-3 mb-4 sm:my-0 sm:-mt-6 md:-mt-20 lg:-mt-22 relative w-full text-left">
+    <div className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[76px] font-extrabold tracking-tight pt-2 pb-2 relative w-full text-left">
       <div className="opacity-0 pointer-events-none select-none text-left" aria-hidden="true">
-        {renderText(fullText)}
+        {renderLines(fullText)}
       </div>
-      <div className="absolute top-0 left-0 w-full h-full pt-10 sm:pt-4 md:pt-0 text-left">
-        {renderText(text)}
-        <span className="animate-pulse border-r-4 border-info-light ml-1 sm:ml-2 inline-block h-[0.8em] align-middle" />
+      <div className="absolute top-0 left-0 w-full h-full pt-2 text-left">
+        {renderLines(text, true)}
       </div>
     </div>
   );
@@ -113,7 +116,7 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 className="text-lg md:text-xl text-primary-light/70 dark:text-primary/70 max-w-lg leading-relaxed"
               >
-                Empowering the next generation of visionaries, builders, and leaders through an active community and extensive resources.
+                Empowering the next generation of researchers, innovators, and leaders through active research, collaborative community, and extensive resources.
               </motion.p>
               
               <motion.div 
@@ -142,8 +145,8 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-tr from-info-light/20 to-transparent rounded-[40px] transform rotate-3" />
               <div className="absolute inset-0 glass-card overflow-hidden">
                 <Image 
-                  src="/heroimg2.png"
-                  alt="Club activities"
+                  src="/heroimg1.png"
+                  alt="HSTU Research Society activities"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
                   referrerPolicy="no-referrer"
@@ -160,10 +163,10 @@ export default function Home() {
         <div className="glass rounded-[36px] p-8 md:p-12 border-white/40 shadow-xl">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-black/5 dark:divide-white/10">
             {[
-              { label: 'Active Members', endValue: 250, suffix: '+' , icon: Users },
+              { label: 'Active Researchers', endValue: 250, suffix: '+' , icon: Users },
               { label: 'Years Established', endValue: 11, suffix: '', icon: Calendar },
               { label: 'Alumni Network', endValue: 600, suffix: '+', icon: Award },
-              { label: 'Resources', endValue: 350, suffix: '+', icon: BookOpen },
+              { label: 'Publications & Resources', endValue: 350, suffix: '+', icon: BookOpen },
             ].map((stat, i) => (
               <motion.div 
                 key={i}
@@ -198,8 +201,8 @@ export default function Home() {
             className="relative h-[400px] lg:h-[600px] w-full rounded-[36px] overflow-hidden group shadow-2xl"
           >
             <Image
-              src="/home2.png"
-              alt="About our club"
+              src="/card.png"
+              alt="About HSTU Research Society"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -208,7 +211,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             <div className="absolute bottom-0 left-0 p-8">
               <div className="glass px-6 py-4 rounded-2xl border-white/20 backdrop-blur-md hover:bg-white/70 transition-colors">
-                <p className="text-primary-light dark:text-primary font-medium">&quot;Building leaders since 2015&quot;</p>
+                <p className="text-primary-light dark:text-primary font-medium">&quot;Pioneering Research &amp; Innovation&quot;</p>
               </div>
             </div>
           </motion.div>
@@ -319,7 +322,7 @@ export default function Home() {
                         )}
                         <div className="min-w-0 flex-1">
                           <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
-                            {item.authorName || item.author || "CE Club HSTU"}
+                            {item.authorName || item.author || "HSTU Research Society"}
                           </p>
                           {item.authorRole && (
                             <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{item.authorRole}</p>

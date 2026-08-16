@@ -105,14 +105,17 @@ export function Navbar() {
             className="w-12 h-12 flex items-center justify-center relative rounded-xl overflow-hidden"
           >
             <Image 
-              src="/logo.png" 
-              alt="Civil Engineering Club Logo" 
+              src="/logo.png?v=3" 
+              alt="HSTU Research Society Logo" 
               width={48}
               height={48}
+              priority
+              unoptimized
               className="w-full h-full object-contain"
+              referrerPolicy="no-referrer"
             />
           </motion.div>
-          <span className="font-bold text-xl tracking-tight hidden sm:block">Civil Engineering Club</span>
+          <span className="font-bold text-xl tracking-tight hidden sm:block">HSTU Research Society</span>
         </Link>
 
         {/* Desktop Nav */}

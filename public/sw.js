@@ -1,11 +1,11 @@
 // Service Worker for HSTU Research Society PWA
-const CACHE_NAME = 'hstu-rs-cache-v1';
+const CACHE_NAME = 'hstu-rs-cache-v3';
 
 const STATIC_ASSETS = [
   '/',
   '/manifest.webmanifest',
   '/manifest.json',
-  '/logo.png',
+  '/logo.png?v=3',
   '/favicon.ico',
 ];
 

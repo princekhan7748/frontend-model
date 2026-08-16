@@ -14,17 +14,19 @@ export function Footer() {
             <div className="flex items-center gap-3 group">
               <div className="w-12 h-12 flex items-center justify-center relative rounded-xl overflow-hidden">
                 <Image 
-                  src="/logo.png" 
-                  alt="Civil Engineering Club Logo" 
+                  src="/logo.png?v=3" 
+                  alt="HSTU Research Society Logo" 
                   width={48}
                   height={48}
+                  unoptimized
                   className="w-full h-full object-contain"
+                  referrerPolicy="no-referrer"
                 />
               </div>
-              <span className="font-bold text-xl tracking-tight">Civil Engineering Club</span>
+              <span className="font-bold text-xl tracking-tight">HSTU Research Society</span>
             </div>
             <p className="text-primary-light/70 dark:text-primary/70 max-w-xs">
-              We grow dreams not houses. Empowering the next generation of leaders through community, resources, and action.
+              Analyze, Strategize, Improvise. Empowering the next generation of researchers through community, innovation, and action.
             </p>
             <div className="flex items-center gap-4">
               {[Facebook, Instagram, Linkedin, Youtube].map((Icon, i) => (
@@ -80,7 +82,7 @@ export function Footer() {
             </div>
             <div className="flex items-center gap-3 text-primary-light/70 dark:text-primary/70 mt-2">
               <Mail className="w-5 h-5 shrink-0 text-info-light" />
-              <p>civilengineeringclubhstu@gmail.com</p>
+              <p>hstu.rs@gmail.com</p>
             </div>
             <motion.a 
               href="https://forms.gle/3NG63JDYm9Qmgg379"
@@ -97,7 +99,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-black/5 dark:border-white/10 gap-4 text-sm text-primary-light/60 dark:text-primary/60">
-          <p>© {new Date().getFullYear()} Civil Engineering Club. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} HSTU Research Society. All rights reserved.</p>
           <div className="flex gap-6">
             <Link href="/privacy-policy" className="hover:text-info-light transition-colors">Privacy Policy</Link>
             <Link href="/terms-of-service" className="hover:text-info-light transition-colors">Terms of Service</Link>

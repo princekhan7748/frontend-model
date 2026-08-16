@@ -618,10 +618,10 @@ export async function getMembership(queryStr: string): Promise<MembershipRecord 
 
       if (!snap.empty) {
         const raw = snap.docs[0].data() as any;
-        const fullName = raw.fullName || raw.name || raw.memberName || 'Club Member';
+        const fullName = raw.fullName || raw.name || raw.memberName || 'Society Member';
         const photoUrl = raw.photoUrl || raw.photo || raw.imageUrl || raw.avatar || `https://picsum.photos/seed/${encodeURIComponent(cleanQuery)}/400/400`;
         const batch = raw.batch !== undefined && raw.batch !== null ? raw.batch : (raw.batchNo || '');
-        const department = raw.department || raw.dept || 'Civil Engineering';
+        const department = raw.department || raw.dept || 'HSTU Research Society';
         const facebookUrl = raw.facebookUrl || raw.facebook || '';
         const linkedinUrl = raw.linkedinUrl || raw.linkedin || '';
         const email = raw.emailAddress || raw.email || '';
