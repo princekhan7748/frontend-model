@@ -99,11 +99,10 @@ export function Footer() {
             <div className="flex items-center gap-3 group">
               <div className="w-12 h-12 flex items-center justify-center relative rounded-xl overflow-hidden">
                 <Image 
-                  src="/logo.png?v=3" 
+                  src="/logo.png" 
                   alt={`${siteName} Logo`} 
                   width={48}
                   height={48}
-                  unoptimized
                   className="w-full h-full object-contain"
                   referrerPolicy="no-referrer"
                 />

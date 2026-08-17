@@ -135,7 +135,11 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const gaMeasurementId = process.env.GA_MEASUREMENT_ID || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const gaMeasurementId =
+    process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID ||
+    process.env.GA_MEASUREMENT_ID ||
+    process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ||
+    process.env.FIREBASE_MEASUREMENT_ID;
 
   return (
     <html lang="en" suppressHydrationWarning className={`${montserrat.variable} ${inter.variable} ${spaceGrotesk.variable}`}>

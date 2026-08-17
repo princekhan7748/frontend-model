@@ -148,6 +148,7 @@ export default function Home() {
                   src="/heroimg1.png"
                   alt="HSTU Research Society activities"
                   fill
+                  priority
                   className="object-cover hover:scale-105 transition-transform duration-700"
                   referrerPolicy="no-referrer"
                   sizes="(max-width: 768px) 100vw, 50vw"

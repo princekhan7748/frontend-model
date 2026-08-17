@@ -15,6 +15,16 @@ const nextConfig: NextConfig = {
         hostname: '**',
       },
     ],
+    localPatterns: [
+      {
+        pathname: '/**',
+        search: '',
+      },
+      {
+        pathname: '/**',
+        search: '?*',
+      },
+    ],
   },
   transpilePackages: ['motion'],
   webpack: (config, {dev}) => {

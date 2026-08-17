@@ -12,8 +12,10 @@ interface GoogleAnalyticsProps {
 export function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps) {
   const activeId =
     measurementId ||
+    process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID ||
     process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ||
     process.env.GA_MEASUREMENT_ID ||
+    process.env.FIREBASE_MEASUREMENT_ID ||
     getTrackingId();
 
   if (activeId) {

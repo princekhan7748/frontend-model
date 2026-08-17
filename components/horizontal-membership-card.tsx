@@ -95,12 +95,12 @@ export function HorizontalMembershipCard({ member }: HorizontalMembershipCardPro
             <div className="flex items-center gap-3">
               <div className="relative w-12 h-12 rounded-xl bg-white/10 p-1.5 backdrop-blur-md border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
                 <Image
-                  src="/logo.png?v=3"
+                  src="/logo.png"
                   alt="HSTU Research Society"
                   width={40}
                   height={40}
-                  unoptimized
                   className="object-contain w-full h-full"
+                  referrerPolicy="no-referrer"
                 />
               </div>
               <div>
