@@ -3,7 +3,8 @@
 import { PageHeader } from '@/components/page-header';
 import { motion } from 'motion/react';
 import { Send, MapPin, Mail, Phone } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getFooterInfo, subscribeFooterInfo, FooterInfo, DEFAULT_FOOTER_INFO } from '@/lib/db';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -14,13 +15,40 @@ export default function ContactPage() {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [contactInfo, setContactInfo] = useState<FooterInfo>(DEFAULT_FOOTER_INFO);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function load() {
+      const data = await getFooterInfo();
+      if (isMounted && data) {
+        setContactInfo(data);
+      }
+    }
+    load();
+
+    const unsub = subscribeFooterInfo((updated) => {
+      if (isMounted && updated) {
+        setContactInfo((prev) => ({ ...prev, ...updated }));
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      unsub();
+    };
+  }, []);
+
+  const targetEmail = contactInfo.email || DEFAULT_FOOTER_INFO.email!;
+  const targetPhone = contactInfo.phone || DEFAULT_FOOTER_INFO.phone!;
+  const targetLocation = contactInfo.address || contactInfo.location || DEFAULT_FOOTER_INFO.address!;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Construct Google Mail URL
     const bodyText = `Name: ${formData.firstName} ${formData.lastName}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
-    const mailToLink = `https://mail.google.com/mail/?view=cm&fs=1&to=hstu.rs@gmail.com&su=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(bodyText)}`;
+    const mailToLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(targetEmail)}&su=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(bodyText)}`;
     
     // Open Gmail in a new tab
     window.open(mailToLink, '_blank');
@@ -53,7 +81,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-secondary-light uppercase tracking-wide">Phone</p>
-                  <p className="font-semibold">+88 XXXX </p>
+                  <a href={`tel:${targetPhone.replace(/\s+/g, '')}`} className="font-semibold hover:text-info-light transition-colors">
+                    {targetPhone}
+                  </a>
                 </div>
               </div>
               
@@ -63,7 +93,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-secondary-light uppercase tracking-wide">Email</p>
-                  <p className="font-semibold">hstu.rs@gmail.com</p>
+                  <a href={`mailto:${targetEmail}`} className="font-semibold hover:text-info-light transition-colors break-all">
+                    {targetEmail}
+                  </a>
                 </div>
               </div>
               
@@ -73,7 +105,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-secondary-light uppercase tracking-wide">Location</p>
-                  <p className="font-semibold">Dr. Muhammad Qudrat-I- Khuda Academic building,Level 2</p>
+                  <p className="font-semibold whitespace-pre-line">{targetLocation}</p>
                 </div>
               </div>
             </div>
@@ -99,7 +131,7 @@ export default function ContactPage() {
                 <button 
                   onClick={() => {
                     const bodyText = `Name: ${formData.firstName} ${formData.lastName}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
-                    const mailToLink = `https://mail.google.com/mail/?view=cm&fs=1&to=hstu.rs@gmail.com&su=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(bodyText)}`;
+                    const mailToLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(targetEmail)}&su=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(bodyText)}`;
                     window.open(mailToLink, '_blank');
                   }}
                   className="btn-primary"

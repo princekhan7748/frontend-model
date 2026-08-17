@@ -4,7 +4,7 @@ import { PageHeader } from '@/components/page-header';
 import { MapPin, Navigation, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { getLocation } from '@/lib/db';
+import { getLocation, DEFAULT_FOOTER_INFO } from '@/lib/db';
 
 export default function LocationPage() {
   const [content, setContent] = useState<any>(null);
@@ -38,7 +38,7 @@ export default function LocationPage() {
             </div>
             <h3 className="font-bold text-xl">Address</h3>
             <div className="text-primary-light/70 dark:text-primary/70 whitespace-pre-wrap">
-              {content?.address || `Dr. Muhammad Qudrat-I- Khuda Academic building\n2th Floor\nDinajpur-5200, Bangladesh`}
+              {content?.address || DEFAULT_FOOTER_INFO.address}
             </div>
           </motion.div>
           

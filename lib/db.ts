@@ -764,18 +764,267 @@ export async function getLocation() {
     const snapLocation = await getDocs(qLocation);
     const locationData = snapLocation.empty ? null : snapLocation.docs[0].data();
 
-    const qFooter = query(collection(db, "site_settings"), where("__name__", "==", "footer"));
-    const snapFooter = await getDocs(qFooter);
-    const footerData = snapFooter.empty ? null : snapFooter.docs[0].data();
+    const footer = await getFooterInfo();
 
     return { 
         id: "location", 
         mapIframe: locationData?.mapIframe,
-        address: footerData?.address,
+        address: footer?.address || locationData?.address,
         ...locationData
     };
   } catch (e) {
     console.error("Failed to fetch location", e);
     return null;
   }
+}
+
+export interface FooterInfo {
+  address?: string;
+  email?: string;
+  facebookUrl?: string;
+  instagramUrl?: string;
+  linkedinUrl?: string;
+  phone?: string;
+  youtubeUrl?: string;
+  updatedAt?: number;
+  twitterUrl?: string;
+  githubUrl?: string;
+  siteName?: string;
+  tagline?: string;
+  description?: string;
+  location?: string;
+  newsletterUrl?: string;
+  newsletterLabel?: string;
+  copyrightText?: string;
+  quickLinks?: { label: string; href: string }[];
+  resourceLinks?: { label: string; href: string }[];
+  [key: string]: any;
+}
+
+export const DEFAULT_FOOTER_INFO: FooterInfo = {
+  address: "TSC, HSTU, Dinajpur 5200",
+  email: "hstu.rs@gmail.com",
+  facebookUrl: "https://www.facebook.com/hsturesearchsociety",
+  instagramUrl: "https://www.instagram.com/iaasbd_hstu/",
+  linkedinUrl: "https://linkedin.com/company/hstu-research-society",
+  phone: "+880 1730-826594",
+  youtubeUrl: "https://www.youtube.com/@hsturesearchsociety3168",
+  siteName: "HSTU Research Society",
+  description: "Analyze, Strategize, Improvise. Empowering the next generation of researchers through community, innovation, and action.",
+  newsletterUrl: "https://forms.gle/3NG63JDYm9Qmgg379",
+  newsletterLabel: "Join our Newsletter",
+};
+
+export function normalizeFooterData(raw: any): FooterInfo {
+  if (!raw || typeof raw !== 'object') return {};
+
+  const address = extractTextContent(
+    raw.address || raw.location || raw.officeAddress || raw.officeLocation || raw.office || raw.addressText
+  );
+
+  const email = raw.email || raw.contactEmail || raw.mail || raw.supportEmail || raw.emailAddress || '';
+  const phone = raw.phone || raw.contactPhone || raw.phoneNo || raw.contactNumber || raw.telephone || raw.mobile || '';
+  const facebookUrl = raw.facebookUrl || raw.facebook || raw.fb || raw.fbUrl || '';
+  const instagramUrl = raw.instagramUrl || raw.instagram || raw.insta || raw.instaUrl || '';
+  const linkedinUrl = raw.linkedinUrl || raw.linkedin || raw.linkedinProfile || '';
+  const youtubeUrl = raw.youtubeUrl || raw.youtube || raw.yt || raw.ytUrl || '';
+  const twitterUrl = raw.twitterUrl || raw.twitter || raw.x || raw.xUrl || '';
+  const githubUrl = raw.githubUrl || raw.github || '';
+
+  const siteName = raw.siteName || raw.organizationName || raw.orgName || raw.title || raw.name || '';
+  const description = extractTextContent(
+    raw.description || raw.tagline || raw.slogan || raw.motto || raw.about || raw.contentMarkdown || raw.bodyRichText || raw.content || raw.bio
+  );
+
+  // Socials map/array fallback if individual fields not present
+  const socials = raw.socialLinks || raw.socials || raw.social_links;
+  let finalFb = facebookUrl;
+  let finalInsta = instagramUrl;
+  let finalLinkedin = linkedinUrl;
+  let finalYt = youtubeUrl;
+  let finalTwitter = twitterUrl;
+  let finalGithub = githubUrl;
+
+  if (socials && typeof socials === 'object' && !Array.isArray(socials)) {
+    finalFb = finalFb || socials.facebook || socials.fb || '';
+    finalInsta = finalInsta || socials.instagram || socials.insta || '';
+    finalLinkedin = finalLinkedin || socials.linkedin || '';
+    finalYt = finalYt || socials.youtube || socials.yt || '';
+    finalTwitter = finalTwitter || socials.twitter || socials.x || '';
+    finalGithub = finalGithub || socials.github || '';
+  } else if (Array.isArray(socials)) {
+    socials.forEach((item: any) => {
+      if (!item) return;
+      const platform = (item.platform || item.name || item.type || '').toLowerCase();
+      const url = item.url || item.link || item.href || '';
+      if (platform.includes('facebook') || platform === 'fb') finalFb = finalFb || url;
+      if (platform.includes('instagram') || platform === 'insta') finalInsta = finalInsta || url;
+      if (platform.includes('linkedin')) finalLinkedin = finalLinkedin || url;
+      if (platform.includes('youtube') || platform === 'yt') finalYt = finalYt || url;
+      if (platform.includes('twitter') || platform === 'x') finalTwitter = finalTwitter || url;
+      if (platform.includes('github')) finalGithub = finalGithub || url;
+    });
+  }
+
+  const newsletterUrl = raw.newsletterUrl || raw.newsletterLink || raw.googleFormUrl || raw.formUrl || raw.joinUrl || raw.newsletter || raw.registrationUrl || '';
+  const newsletterLabel = raw.newsletterLabel || raw.newsletterText || raw.newsletterTitle || raw.actionText || '';
+  const copyrightText = raw.copyrightText || raw.copyright || raw.footerText || '';
+  const updatedAt = typeof raw.updatedAt === 'number' ? raw.updatedAt : raw.updatedAt?.toMillis?.() || undefined;
+
+  let quickLinks: { label: string; href: string }[] | undefined = undefined;
+  if (Array.isArray(raw.quickLinks || raw.quick_links)) {
+    quickLinks = (raw.quickLinks || raw.quick_links).map((l: any) => ({
+      label: l.label || l.title || l.name || '',
+      href: l.href || l.url || l.link || '#'
+    })).filter((l: any) => l.label);
+  }
+
+  let resourceLinks: { label: string; href: string }[] | undefined = undefined;
+  if (Array.isArray(raw.resourceLinks || raw.resources || raw.resource_links)) {
+    resourceLinks = (raw.resourceLinks || raw.resources || raw.resource_links).map((l: any) => ({
+      label: l.label || l.title || l.name || '',
+      href: l.href || l.url || l.link || '#'
+    })).filter((l: any) => l.label);
+  }
+
+  return {
+    ...raw,
+    address: address || undefined,
+    location: address || undefined,
+    email: email || undefined,
+    phone: phone || undefined,
+    facebookUrl: finalFb || undefined,
+    instagramUrl: finalInsta || undefined,
+    linkedinUrl: finalLinkedin || undefined,
+    youtubeUrl: finalYt || undefined,
+    twitterUrl: finalTwitter || undefined,
+    githubUrl: finalGithub || undefined,
+    updatedAt,
+    siteName: siteName || undefined,
+    description: description || undefined,
+    tagline: description || undefined,
+    newsletterUrl: newsletterUrl || undefined,
+    newsletterLabel: newsletterLabel || undefined,
+    copyrightText: copyrightText || undefined,
+    quickLinks: quickLinks && quickLinks.length > 0 ? quickLinks : undefined,
+    resourceLinks: resourceLinks && resourceLinks.length > 0 ? resourceLinks : undefined,
+  };
+}
+
+export const FOOTER_COLLECTIONS = ['site_settings', 'settings', 'footer', 'pages_static', 'static_pages'];
+export const FOOTER_DOC_IDS = ['footer', 'general', 'contact', 'socials', 'info', 'main'];
+
+export async function getFooterInfo(): Promise<FooterInfo> {
+  if (!db) return DEFAULT_FOOTER_INFO;
+
+  // 1. Primary check: direct document site_settings / footer
+  try {
+    const docRef = doc(db, 'site_settings', 'footer');
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const normalized = normalizeFooterData(data);
+      return { ...DEFAULT_FOOTER_INFO, ...normalized };
+    }
+  } catch (e) {
+    console.warn('Error querying site_settings/footer directly:', e);
+  }
+
+  // 2. Fallback check on other collections if site_settings/footer was not found
+  const mergedData: any = { ...DEFAULT_FOOTER_INFO };
+
+  for (const colName of FOOTER_COLLECTIONS) {
+    for (const docId of FOOTER_DOC_IDS) {
+      try {
+        const docRef = doc(db, colName, docId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const normalized = normalizeFooterData(data);
+          for (const [k, v] of Object.entries(normalized)) {
+            if (v !== undefined && v !== '') {
+              mergedData[k] = v;
+            }
+          }
+        }
+      } catch {
+        // Continue silently
+      }
+    }
+  }
+
+  return mergedData;
+}
+
+export function subscribeFooterInfo(onUpdate: (info: FooterInfo) => void) {
+  if (!db) return () => {};
+
+  const unsubs: (() => void)[] = [];
+  const cache: Record<string, any> = {};
+
+  const triggerUpdate = () => {
+    const combined: any = { ...DEFAULT_FOOTER_INFO };
+    for (const data of Object.values(cache)) {
+      const normalized = normalizeFooterData(data);
+      for (const [k, v] of Object.entries(normalized)) {
+        if (v !== undefined && v !== '') {
+          combined[k] = v;
+        }
+      }
+    }
+    onUpdate(combined);
+  };
+
+  // Listen directly to site_settings/footer with highest priority
+  try {
+    const primaryRef = doc(db, 'site_settings', 'footer');
+    const unsubPrimary = onSnapshot(
+      primaryRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          cache['primary'] = docSnap.data();
+          triggerUpdate();
+        }
+      },
+      (err) => {
+        console.warn('Realtime listener error on site_settings/footer:', err);
+      }
+    );
+    unsubs.push(unsubPrimary);
+  } catch (err) {
+    console.warn('Could not subscribe to site_settings/footer:', err);
+  }
+
+  // Also listen to any secondary documents
+  for (const colName of FOOTER_COLLECTIONS) {
+    for (const docId of FOOTER_DOC_IDS) {
+      if (colName === 'site_settings' && docId === 'footer') continue; // already subscribed above
+      try {
+        const docRef = doc(db, colName, docId);
+        const unsub = onSnapshot(
+          docRef,
+          (docSnap) => {
+            if (docSnap.exists()) {
+              cache[`${colName}/${docId}`] = docSnap.data();
+              triggerUpdate();
+            }
+          },
+          () => {}
+        );
+        unsubs.push(unsub);
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  return () => {
+    unsubs.forEach((u) => {
+      try {
+        u();
+      } catch {
+        // ignore
+      }
+    });
+  };
 }
