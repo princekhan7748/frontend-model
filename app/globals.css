@@ -101,6 +101,26 @@
   .input-glass:focus {
     @apply ring-2 ring-info-light dark:ring-info shadow-lg bg-white/80 dark:bg-black/50;
   }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 35s linear infinite;
+  }
+
+  .animate-marquee:hover,
+  .marquee-group:hover .animate-marquee {
+    animation-play-state: paused;
+  }
 }
 
 @media print {

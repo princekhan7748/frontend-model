@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Calendar, Users, Award, BookOpen, MapPin, CalendarPlus } from 'lucide-react';
 import { getLatestBlogs, getUpcomingEvents } from '@/lib/db';
+import { PartnersSection } from '@/components/partners-section';
 
 function AnimatedCounter({ endValue, duration = 2000, suffix = "" }: { endValue: number, duration?: number, suffix?: string }) {
   const [count, setCount] = useState(0);
@@ -408,17 +409,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sponsors/Partners */}
-      <section className="container mx-auto px-6 max-w-7xl text-center flex flex-col gap-10">
-        <h3 className="text-sm font-bold text-secondary-light uppercase tracking-widest">Supported By Industry Leaders</h3>
-        <div className="flex flex-wrap justify-center gap-12 md:gap-20 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-          {[1,2,3,4,5].map(i => (
-            <div key={i} className="flex items-center justify-center font-bold text-2xl tracking-tighter hover:text-info-light transition-colors cursor-pointer">
-              PARTNER <span className="font-numbers ml-1">0{i}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Partners & Collaborators Section */}
+      <PartnersSection />
     </div>
   );
 }

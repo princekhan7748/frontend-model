@@ -29,6 +29,24 @@ export interface BlogPost {
   [key: string]: any;
 }
 
+export interface Partner {
+  id: string;
+  name: string;
+  category?: string;
+  description?: string;
+  displayInFrontend?: boolean;
+  image?: string;
+  imageUrl?: string;
+  logo?: string;
+  logoUrl?: string;
+  order?: number;
+  position?: number;
+  status?: string;
+  websiteUrl?: string;
+  createdAt?: any;
+  [key: string]: any;
+}
+
 // Helper to extract clean text from rich object or HTML/Markdown
 export function extractTextContent(val: any): string {
   if (!val) return '';
@@ -477,6 +495,124 @@ export async function getResources() {
   const q = query(collection(db, "resources"), orderBy("createdAt", "desc"));
   const snap = await getDocs(q);
   return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+export function normalizePartnerData(id: string, raw: any): Partner {
+  const imageUrl = raw.imageUrl || raw.logoUrl || raw.image || raw.logo || '';
+  const websiteUrl = raw.websiteUrl || raw.url || raw.link || raw.website || '';
+  const name = raw.name || raw.title || raw.companyName || 'Partner';
+  const category = raw.category || raw.type || 'Corporate Partner';
+  const description = raw.description || raw.desc || raw.about || '';
+  const order = typeof raw.order === 'number' ? raw.order : typeof raw.position === 'number' ? raw.position : 999;
+  const position = typeof raw.position === 'number' ? raw.position : order;
+  const displayInFrontend = raw.displayInFrontend !== false;
+  const status = raw.status || 'published';
+
+  return {
+    id,
+    ...raw,
+    name,
+    category,
+    description,
+    displayInFrontend,
+    image: imageUrl,
+    imageUrl,
+    logo: imageUrl,
+    logoUrl: imageUrl,
+    order,
+    position,
+    status,
+    websiteUrl,
+    createdAt: raw.createdAt || Date.now(),
+  };
+}
+
+export async function getPartners(): Promise<Partner[]> {
+  if (!db) return [];
+  const collectionsToTry = ['partners', 'partner', 'sponsors', 'collaborators'];
+  const partnersMap = new Map<string, Partner>();
+
+  for (const colName of collectionsToTry) {
+    try {
+      let snap;
+      try {
+        snap = await getDocs(query(collection(db, colName), orderBy('order', 'asc')));
+      } catch {
+        try {
+          snap = await getDocs(query(collection(db, colName), orderBy('createdAt', 'desc')));
+        } catch {
+          snap = await getDocs(collection(db, colName));
+        }
+      }
+
+      if (snap && !snap.empty) {
+        snap.docs.forEach((docSnap) => {
+          const raw = docSnap.data();
+          const normalized = normalizePartnerData(docSnap.id, raw);
+          if (
+            normalized.displayInFrontend &&
+            normalized.status !== 'draft' &&
+            normalized.status !== 'archived' &&
+            normalized.status !== 'hidden'
+          ) {
+            partnersMap.set(docSnap.id, normalized);
+          }
+        });
+      }
+    } catch (err) {
+      console.warn(`Error querying partners from collection "${colName}":`, err);
+    }
+  }
+
+  const list = Array.from(partnersMap.values());
+  list.sort((a, b) => {
+    if (a.order !== b.order) return (a.order ?? 999) - (b.order ?? 999);
+    if (a.position !== b.position) return (a.position ?? 999) - (b.position ?? 999);
+    return (b.createdAt ?? 0) - (a.createdAt ?? 0);
+  });
+
+  return list;
+}
+
+export function subscribePartners(onUpdate: (partners: Partner[]) => void): () => void {
+  if (!db) return () => {};
+
+  try {
+    const q = collection(db, 'partners');
+    const unsub = onSnapshot(
+      q,
+      (snap) => {
+        const list: Partner[] = [];
+        snap.docs.forEach((docSnap) => {
+          const raw = docSnap.data();
+          const normalized = normalizePartnerData(docSnap.id, raw);
+          if (
+            normalized.displayInFrontend &&
+            normalized.status !== 'draft' &&
+            normalized.status !== 'archived' &&
+            normalized.status !== 'hidden'
+          ) {
+            list.push(normalized);
+          }
+        });
+
+        list.sort((a, b) => {
+          if (a.order !== b.order) return (a.order ?? 999) - (b.order ?? 999);
+          if (a.position !== b.position) return (a.position ?? 999) - (b.position ?? 999);
+          return (b.createdAt ?? 0) - (a.createdAt ?? 0);
+        });
+
+        onUpdate(list);
+      },
+      (err) => {
+        console.warn('Realtime listener error on partners:', err);
+      }
+    );
+    return unsub;
+  } catch (err) {
+    console.warn('Failed to subscribe to partners collection:', err);
+    return () => {};
+  }
 }
 
 export async function getFaqs() {
